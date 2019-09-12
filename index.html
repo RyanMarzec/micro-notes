@@ -8,5 +8,50 @@
     <body>
         <!-- This is a comment -->
         <h1>OSD600 Lab 2</h1>
+
+		<div id="content"></div>
+
+	<!-- Scripts -->
+	<script src="https://unpkg.com/filer/dist/filer.min.js"></script>
+	<script>
+		const fs = new Filer.FileSystem();
+
+		var defaultString = "Welcome to my notepad!";
+		var contentDiv = document.getElementById("content");
+		var notesDiv = document.createElement("div");
+		
+		notesDiv.id = "notes"
+		notesDiv.setAttribute("contenteditable",true);
+		
+		contentDiv.appendChild(notesDiv);
+
+		window.addEventListener('DOMContentLoaded',(event) => {
+			console.log('DOM fully loaded and parsed');
+
+			fs.readFile('/note','utf8',function(err,data){
+				if(err){
+					console.log("unable to load documents");	
+					notesDiv.textContent = defaultString;
+				}
+				if(data){
+					console.log("documents loaded");
+					document.querySelector('#notes').innerHTML = data
+				}
+			});
+					
+			setInterval(saveInterval, 5000);
+			function saveInterval(){
+				var notes = document.querySelector('#notes').innerHTML;
+				fs.writeFile('/note', notes, function (err){
+					if(err){
+						console.log("error saving to document");
+					}
+						else{
+							console.log("document saved");
+						}
+				});
+			}
+		});
+	</script>
     </body>
 </html>

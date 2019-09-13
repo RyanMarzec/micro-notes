@@ -2,6 +2,7 @@
 web based note taking app
 
 TODO:
+
 Better cancel button:
   - Currently just refreshing page without saving new content to notes.
   - I am sure there is a better, more dynamic way of doing this that I am unaware of at this time

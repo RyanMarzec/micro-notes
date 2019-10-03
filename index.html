@@ -1,78 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<link rel="stylesheet" href="paper.css"> 
+    <link rel="stylesheet" href="paper.css" />
 
-        <title>My Web Page</title>
-    </head>
+    <title>My Web Page</title>
+  </head>
 
-    <body>
-        <!-- This is a comment -->
+  <body>
+    <!-- This is a comment -->
 
+    <div id="content">
+      <h2>Micro-Notes</h2>
+      <h3>OSD600 Lab 2</h3>
 
-	<div id="content">
-		<h2>Micro-Notes</h2>
-        <h3>OSD600 Lab 2</h3>
+      <div id="note_message">
+        <p id="save_message"></p>
+      </div>
 
-		<div id="note_message">
-			<p id="save_message"></p>
-		</div>
+      <div id="notes" contenteditable></div>
 
-		<div id="notes" contenteditable></div>
+      <div id="note_buttons">
+        <button onClick="save()">Save Changes</button>
+        <button onClick="window.location.reload();">Cancel</button>
+      </div>
+    </div>
 
-		<div id="note_buttons">
-			<button onClick="save()">Save Changes</button>
-			<button onClick="window.location.reload();">Cancel</button>
-		</div>
-	</div>
+    <!-- Scripts -->
+    <script src="https://unpkg.com/filer/dist/filer.min.js"></script>
+    <script>
+      const fs = new Filer.FileSystem();
 
-	<!-- Scripts -->
-	<script src="https://unpkg.com/filer/dist/filer.min.js"></script>
-	<script>
-		const fs = new Filer.FileSystem();
+      var defaultString = "Welcome to my notepad!";
 
-		var defaultString = "Welcome to my notepad!";
+      window.addEventListener("DOMContentLoaded", event => {
+        window.onload = function() {
+          document.getElementById("notes").focus();
+          console.log("DOM fully loaded and parsed");
 
-		window.addEventListener('DOMContentLoaded',(event) => {
-			console.log('DOM fully loaded and parsed');
+          fs.readFile("/note", "utf8", function(err, data) {
+            if (err) {
+              console.log("unable to load documents");
+              notesDiv.textContent = defaultString;
+            }
+            if (data) {
+              console.log("documents loaded");
+              document.querySelector("#notes").innerHTML = data;
+            }
+          });
+        };
+      });
 
-			fs.readFile('/note','utf8',function(err,data){
-				if(err){
-					console.log("unable to load documents");	
-					notesDiv.textContent = defaultString;
-				}
-				if(data){
-					console.log("documents loaded");
-					document.querySelector('#notes').innerHTML = data
-				}
+      function save() {
+        var msg1 = "Document saved successfully!";
+        var msg2 = "Failed to save document!";
+        var notes = document.querySelector("#notes").innerHTML;
 
-			});
-		});
+        fs.writeFile("/note", notes, function(err) {
+          if (err) {
+            console.log("error saving to document");
+            document.querySelector("#save_message").innerHTML = msg2;
+          } else {
+            console.log("document saved");
+            document.querySelector("#save_message").innerHTML = msg1;
+          }
 
-		function save(){
-			var msg1 = "Document saved successfully!"
-			var msg2 = "Failed to save document!"
-			var notes = document.querySelector('#notes').innerHTML;
-
-			fs.writeFile('/note', notes, function (err){
-				if(err){
-					console.log("error saving to document");
-					document.querySelector('#save_message').innerHTML = msg2; 
-				}
-				else{
-					console.log("document saved");
-					document.querySelector('#save_message').innerHTML = msg1; 
-				}
-
-				setTimeout(clearMessage, 2000);
-				function clearMessage(){
-					document.querySelector('#save_message').innerHTML="";
-				}
-			});
-		}
-	</script>
-    </body>
+          setTimeout(clearMessage, 2000);
+          function clearMessage() {
+            document.querySelector("#save_message").innerHTML = "";
+          }
+        });
+      }
+    </script>
+  </body>
 </html>
